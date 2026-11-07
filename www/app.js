@@ -13,7 +13,7 @@
   const cap = window.Capacitor;
   const native = !!(cap && cap.isNativePlatform && cap.isNativePlatform());
   let LN = null, WB = null;
-  try { if (native) { LN = cap.registerPlugin("LocalNotifications"); WB = cap.registerPlugin("WidgetBridge"); } } catch (e) { if (window.__showErr) window.__showErr("plugins: " + e.message); }
+  try { if (native) { const P = cap.Plugins || {}; LN = P.LocalNotifications || null; WB = P.WidgetBridge || null; if (!LN) throw new Error("нет LocalNotifications"); } } catch (e) { if (window.__showErr) window.__showErr("plugins: " + e.message); }
 
   const store = {
     get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
