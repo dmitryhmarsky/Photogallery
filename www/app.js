@@ -12,8 +12,8 @@
   const LS_CFG = "shoots_cfg", LS_DATA = "shoots_data";
   const cap = window.Capacitor;
   const native = !!(cap && cap.isNativePlatform && cap.isNativePlatform());
-  const LN = native ? cap.registerPlugin("LocalNotifications") : null;
-  const WB = native ? cap.registerPlugin("WidgetBridge") : null;
+  let LN = null, WB = null;
+  try { if (native) { LN = cap.registerPlugin("LocalNotifications"); WB = cap.registerPlugin("WidgetBridge"); } } catch (e) { if (window.__showErr) window.__showErr("plugins: " + e.message); }
 
   const store = {
     get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
@@ -396,10 +396,10 @@
     $("saveCfg").onclick = saveCfg; $("syncNow").onclick = () => sync(true); $("permBtn").onclick = () => ensurePermission(true);
     window.addEventListener("popstate", () => { if (skipPop) { skipPop = false; return; } if ($("viewer").classList.contains("open")) closeViewer(true); else if ($("sheet").classList.contains("open")) closeEditor(true); });
     document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && cfgOk() && Date.now() - lastSync > 60000) sync(false); });
-    if (LN) LN.addListener("localNotificationActionPerformed", (a) => { const id = a && a.notification && a.notification.extra && a.notification.extra.id; if (id && data.events[id] && !data.events[id].del) openEditor(id); });
-    render(); showTab("cal"); setStatus(statusText());
-    if (cfgOk()) sync(false); else showTab("set");
-    afterChange();
+    if (LN) try { const pr = LN.addListener("localNotificationActionPerformed", (a) => { const id = a && a.notification && a.notification.extra && a.notification.extra.id; if (id && data.events[id] && !data.events[id].del) openEditor(id); }); if (pr && pr.catch) pr.catch(() => {}); } catch (e) { /* без уведомлений */ }
+    try { render(); showTab("cal"); setStatus(statusText()); } catch (e) { if (window.__showErr) window.__showErr("render: " + e.message); }
+    try { if (cfgOk()) sync(false); else showTab("set"); } catch (e) { if (window.__showErr) window.__showErr("sync: " + e.message); }
+    try { afterChange(); } catch (e) { /* ignore */ }
   }
   function openViewerStep(d) { const n = editing.refs.length; if (n < 2) return; openViewer((viewerIdx + d + n) % n); }
   window.__shoots = { sync: sync, data: () => data, cfg: () => cfg, openEditor: openEditor };
