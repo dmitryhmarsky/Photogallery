@@ -1,0 +1,7 @@
+{
+  "appId": "com.photogallery.shoots",
+  "appName": "Съёмки",
+  "webDir": "www",
+  "server": { "androidScheme": "https" },
+  "android": { "allowMixedContent": false }
+}

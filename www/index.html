@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#3E2C23">
+<title>Съёмки</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div id="app">
+  <header class="bar" id="bar">
+    <div class="bar-row">
+      <span class="sync" id="syncSt"></span>
+      <button class="icon-btn" id="addBtn" aria-label="Новая съёмка">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke-width="2.4" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <h1 id="title">Съёмки</h1>
+  </header>
+
+  <main id="main">
+    <section class="page" id="pgCal">
+      <div class="month-head">
+        <button class="icon-btn flat" id="prevM" aria-label="Назад"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="month-name" id="monthName"></div>
+        <button class="icon-btn flat" id="nextM" aria-label="Вперёд"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="link" id="todayBtn">Сегодня</button>
+      </div>
+      <div class="cal">
+        <div class="wd"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span></div>
+        <div class="days" id="days"></div>
+      </div>
+      <div class="day-title" id="dayTitle"></div>
+      <div id="dayList"></div>
+    </section>
+
+    <section class="page" id="pgList" hidden>
+      <div class="seg" id="seg"><button data-v="up" class="on">Предстоящие</button><button data-v="past">Прошедшие</button></div>
+      <div id="allList"></div>
+    </section>
+
+    <section class="page" id="pgSet" hidden>
+      <div class="sect-title">Облако Cloudflare R2</div>
+      <div class="group">
+        <label class="row"><span>Account ID</span><input id="cAcc" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="из панели Cloudflare"></label>
+        <label class="row"><span>Access Key ID</span><input id="cAccess" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+        <label class="row"><span>Secret Key</span><input id="cSecret" type="password" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+        <label class="row"><span>Бакет</span><input id="cBucket" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="имя бакета"></label>
+      </div>
+      <div class="foot">Те же данные, что в настройках приложения на компьютере. Можно вставить одной строкой, которую копирует кнопка «Скопировать настройки для телефона» в Photo Gallery.</div>
+      <div class="group">
+        <label class="row col"><span>Вставить настройки с компьютера</span><textarea id="cPaste" rows="2" placeholder='{"account":"...","access":"...","secret":"...","bucket":"..."}'></textarea></label>
+      </div>
+      <button class="btn" id="saveCfg">Сохранить и проверить</button>
+      <div class="msg" id="cfgMsg"></div>
+
+      <div class="sect-title">Напоминания</div>
+      <div class="group">
+        <div class="row col"><span>По умолчанию для новых съёмок</span><div class="chips" id="defRem"></div></div>
+        <button class="row btn-row" id="permBtn"><span>Разрешить уведомления</span><span class="chev">›</span></button>
+      </div>
+      <div class="foot">Если напоминания приходят с опозданием, в настройках телефона разрешите приложению «Будильники и напоминания» и отключите экономию батареи для него.</div>
+
+      <div class="sect-title">Виджеты</div>
+      <div class="foot nopad">Удерживайте палец на пустом месте рабочего стола → «Виджеты» → «Съёмки». Есть три размера: малый (ближайшая съёмка), средний (3 съёмки) и большой (6 съёмок).</div>
+
+      <div class="sect-title">Синхронизация</div>
+      <div class="group">
+        <button class="row btn-row" id="syncNow"><span>Синхронизировать сейчас</span><span class="chev">›</span></button>
+      </div>
+      <div class="foot" id="syncInfo"></div>
+      <div class="foot ver">Съёмки · часть Photo Gallery</div>
+    </section>
+  </main>
+
+  <nav class="tabs" id="tabs">
+    <button data-t="cal" class="on"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3" /><path d="M3.5 10h17M8 3v4M16 3v4" stroke-linecap="round"/></svg><span>Календарь</span></button>
+    <button data-t="list"><svg viewBox="0 0 24 24"><path d="M8 7h12M8 12h12M8 17h12" stroke-linecap="round"/><circle cx="4" cy="7" r="1" /><circle cx="4" cy="12" r="1" /><circle cx="4" cy="17" r="1" /></svg><span>Все съёмки</span></button>
+    <button data-t="set"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8" stroke-linecap="round"/></svg><span>Настройки</span></button>
+  </nav>
+</div>
+
+<!-- редактор съёмки -->
+<div class="sheet" id="sheet" aria-hidden="true">
+  <div class="sheet-bar">
+    <button class="link" id="shCancel">Отмена</button>
+    <div class="sheet-title" id="shTitle">Новая съёмка</div>
+    <button class="link strong" id="shSave">Готово</button>
+  </div>
+  <div class="sheet-body">
+    <div class="group">
+      <label class="row"><input id="eTitle" placeholder="Название (например, свадьба Анны)" maxlength="120"></label>
+      <label class="row"><span>Клиент</span><input id="eClient" list="clientList" placeholder="имя" maxlength="80" autocomplete="off"></label>
+      <datalist id="clientList"></datalist>
+      <label class="row"><span>Место</span><input id="ePlace" placeholder="адрес или название" maxlength="160"></label>
+    </div>
+    <div class="group">
+      <label class="row"><span>Дата</span><input id="eDate" type="date"></label>
+      <label class="row"><span>Время</span><input id="eTime" type="time"></label>
+    </div>
+    <div class="sect-title small">Напомнить</div>
+    <div class="group"><div class="row col"><div class="chips" id="eRem"></div></div></div>
+    <div class="sect-title small">Заметки</div>
+    <div class="group"><label class="row col"><textarea id="eNotes" rows="5" placeholder="Что взять, пожелания клиента, тайминг, контакты" maxlength="4000"></textarea></label></div>
+    <div class="sect-title small">Референсы</div>
+    <div class="group pad">
+      <div class="refs" id="eRefs"></div>
+      <button class="btn ghost" id="addRef">Добавить фото</button>
+      <input type="file" id="refInput" accept="image/*" multiple hidden>
+    </div>
+    <button class="btn danger" id="delBtn" hidden>Удалить съёмку</button>
+    <div class="spacer"></div>
+  </div>
+</div>
+
+<!-- просмотр референса -->
+<div class="viewer" id="viewer" aria-hidden="true">
+  <div class="viewer-bar"><button class="link" id="vClose">Закрыть</button><span id="vCnt"></span><button class="link danger-t" id="vDel">Удалить</button></div>
+  <div class="viewer-stage" id="vStage"><img id="vImg" alt=""></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="sigv4.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

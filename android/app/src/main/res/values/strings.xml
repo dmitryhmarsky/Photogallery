@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Съёмки</string>
+    <string name="title_activity_main">Съёмки</string>
+    <string name="package_name">com.photogallery.shoots</string>
+    <string name="custom_url_scheme">com.photogallery.shoots</string>
+    <string name="w_small">Следующая съёмка</string>
+    <string name="w_medium">Ближайшие съёмки (3)</string>
+    <string name="w_large">Расписание съёмок (6)</string>
+</resources>
